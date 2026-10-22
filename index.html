@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Full Body: рекомпозиция</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Manrope:wght@400;500;700&display=swap">
+<style>
+/* Layout: one narrow column like a training card; day tabs colored like Olympic plates (25 red / 20 blue / 15 yellow), food in green */
+:root{
+  --bg:#F2F4F7; --surface:#FFFFFF; --ink:#141820; --muted:#5D6675; --line:#DDE2EA;
+  --a:#C9283E; --b:#1E5CC0; --c:#C99A06; --f:#2E8B57;
+  --display:"Unbounded", "Arial Black", system-ui, sans-serif;
+  --body:"Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1116; --surface:#171B22; --ink:#E9EDF3; --muted:#9AA4B4; --line:#2A303A;
+  --a:#F0566B; --b:#5C95F5; --c:#F0C53C; --f:#4CC38A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1116; --surface:#171B22; --ink:#E9EDF3; --muted:#9AA4B4; --line:#2A303A;
+  --a:#F0566B; --b:#5C95F5; --c:#F0C53C; --f:#4CC38A; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:680px;margin:0 auto;padding-block:28px 56px;
+  padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:24px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,8vw,40px);line-height:1.05;margin:0;text-wrap:balance}
+.lede{color:var(--muted);margin:8px 0 0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;
+  background:var(--bg);padding-block:8px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.tab{font-family:var(--display);font-weight:600;font-size:clamp(12px,3.4vw,15px);padding:12px 4px;border-radius:12px;border:2px solid var(--line);
+  background:var(--surface);color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.tab .dot{width:10px;height:10px;border-radius:50%;background:var(--c-day);flex:none}
+.tab[aria-selected="true"]{border-color:var(--c-day);box-shadow:inset 0 0 0 1px var(--c-day)}
+.tab:focus-visible,a:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid var(--c-day, var(--b));outline-offset:2px}
+[data-day="a"]{--c-day:var(--a)} [data-day="b"]{--c-day:var(--b)} [data-day="c"]{--c-day:var(--c)} [data-day="food"]{--c-day:var(--f)}
+.panel{display:flex;flex-direction:column;gap:14px}
+.day-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.day-head h2,.panel h2{font-family:var(--display);font-size:22px;margin:0}
+.reset{font:inherit;font-size:13px;color:var(--muted);background:none;border:0;text-decoration:underline;cursor:pointer;padding:4px}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ex{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--c-day);border-radius:14px;padding:14px;
+  display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:start}
+.ex.done{opacity:.55}
+.ex input[type=checkbox]{width:24px;height:24px;margin:2px 0 0;accent-color:var(--c-day);grid-row:span 4}
+.ex-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 10px;min-width:0}
+.ex-name{font-weight:700;font-size:17px;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--c-day)}
+.ex-name:hover{color:var(--c-day)}
+.sets{font-family:var(--display);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.muscles{color:var(--muted);font-size:14px;min-width:0}
+.note{font-size:14px;min-width:0}
+.note a{color:var(--c-day);font-weight:700}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-width:0}
+.vid{font-size:13px;font-weight:700;color:var(--c-day);text-decoration:none;padding:6px 10px;border-radius:8px;background:color-mix(in srgb, var(--c-day) 12%, transparent)}
+.log{flex:1;min-width:0;max-width:220px;font:inherit;font-size:14px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.block{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+.block h3{font-family:var(--display);font-size:16px;margin:0 0 10px}
+.block p{margin:0 0 8px}
+.block ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.block li::marker{color:var(--muted)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.foot{color:var(--muted);font-size:13px;margin:0}
+/* food */
+.targets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.t{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}
+.t b{display:block;font-family:var(--display);font-size:clamp(16px,5vw,22px);font-variant-numeric:tabular-nums;color:var(--f)}
+.t span{font-size:12px;color:var(--muted)}
+.meal{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--f);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.meal-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 10px}
+.meal-top strong{font-size:17px}
+.time{font-family:var(--display);font-size:13px;font-weight:600;color:var(--f);font-variant-numeric:tabular-nums}
+.meal ul{margin:0;padding-left:18px}
+.macro{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tip{font-size:14px;padding:8px 10px;border-radius:8px;background:color-mix(in srgb, var(--f) 11%, transparent)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700}
+td.n,th.n{text-align:right;white-space:nowrap}
+tfoot td{font-weight:700;border-bottom:0}
+.small{font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.ex{transition:opacity .2s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Full Body: рекомпозиция</h1>
+    <p class="lede">Три тренировки в неделю и простое питание без рыбы и грибов. Цель на 12 недель: шире плечи и грудь, меньше живот. Нажми на название упражнения, чтобы открыть видео с техникой.</p>
+    <div class="meta">
+      <span class="chip">пн / ср / пт</span>
+      <span class="chip">дни A → B → C по кругу</span>
+      <span class="chip">≈ 60–70 мин</span>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Разделы">
+    <button class="tab" role="tab" id="tab-a" data-day="a" aria-controls="day-a"><span class="dot"></span>День A</button>
+    <button class="tab" role="tab" id="tab-b" data-day="b" aria-controls="day-b"><span class="dot"></span>День B</button>
+    <button class="tab" role="tab" id="tab-c" data-day="c" aria-controls="day-c"><span class="dot"></span>День C</button>
+    <button class="tab" role="tab" id="tab-food" data-day="food" aria-controls="day-food"><span class="dot"></span>Еда</button>
+  </nav>
+
+  <div id="panels"></div>
+
+  <section class="panel" id="day-food" data-day="food" role="tabpanel" aria-labelledby="tab-food" hidden>
+    <h2>Питание</h2>
+    <p class="small" style="margin:0">Расчёт на вес около 80 кг. Если весишь заметно больше или меньше, меняй порции гарнира, а белок оставляй примерно 2 г на кг.</p>
+
+    <div class="targets">
+      <div class="t"><b>~185 г</b><span>белка в день</span></div>
+      <div class="t"><b>~2700</b><span>ккал в день</span></div>
+      <div class="t"><b>5 раз</b><span>приёмов пищи</span></div>
+    </div>
+
+    <h3 style="font-family:var(--display);font-size:17px;margin:6px 0 0">Распорядок дня</h3>
+    <div class="list">
+      <div class="meal">
+        <div class="meal-top"><strong>Завтрак</strong><span class="time">в течение часа после подъёма</span></div>
+        <ul><li>Овсянка 80 г на молоке 250 мл</li><li>3 яйца (омлет или варёные)</li><li>Банан</li></ul>
+        <div class="macro">≈ 37 г белка · 760 ккал</div>
+      </div>
+      <div class="meal">
+        <div class="meal-top"><strong>Обед</strong><span class="time">13:00–14:00</span></div>
+        <ul><li>Куриная грудка или бедро без кожи, 200 г сырого веса</li><li>Гречка 100 г сухой</li><li>Овощи: капуста, огурцы, морковь или замороженная смесь</li><li>1 ч. л. растительного масла</li></ul>
+        <div class="macro">≈ 55 г белка · 690 ккал</div>
+      </div>
+      <div class="meal">
+        <div class="meal-top"><strong>Перекус до зала</strong><span class="time">за 1,5–2 часа до тренировки</span></div>
+        <ul><li>Творог 5% 200 г</li><li>2 куска хлеба или банан</li></ul>
+        <div class="macro">≈ 37 г белка · 390 ккал</div>
+        <div class="tip">В дни без тренировки ешь это просто как полдник.</div>
+      </div>
+      <div class="meal">
+        <div class="meal-top"><strong>Ужин после зала</strong><span class="time">в течение 1–2 часов после тренировки</span></div>
+        <ul><li>Куриный фарш 200 г: котлеты или тефтели в духовке</li><li>Рис 80 г сухого (или макароны из твёрдых сортов)</li><li>Овощи</li></ul>
+        <div class="macro">≈ 44 г белка · 650 ккал</div>
+      </div>
+      <div class="meal">
+        <div class="meal-top"><strong>Перед сном</strong><span class="time">за 1 час до сна</span></div>
+        <ul><li>Кефир 1% 500 мл (можно заменить на творог)</li></ul>
+        <div class="macro">≈ 15 г белка · 200 ккал</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h3>Самый дешёвый белок</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Продукт</th><th class="n">Цена</th><th class="n">₽ за 100 г белка</th></tr></thead>
+          <tbody>
+            <tr><td>Куриная печень</td><td class="n">≈ 250 ₽/кг</td><td class="n">≈ 125</td></tr>
+            <tr><td>Яйца</td><td class="n">≈ 110 ₽/10 шт</td><td class="n">≈ 175</td></tr>
+            <tr><td>Бедро без кожи</td><td class="n">≈ 350 ₽/кг</td><td class="n">≈ 195</td></tr>
+            <tr><td>Куриный фарш</td><td class="n">≈ 400 ₽/кг</td><td class="n">≈ 235</td></tr>
+            <tr><td>Куриная грудка</td><td class="n">≈ 600 ₽/кг</td><td class="n">≈ 260</td></tr>
+            <tr><td>Творог 5%</td><td class="n">≈ 110 ₽/200 г</td><td class="n">≈ 320</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small" style="margin:8px 0 0">Цены примерные на октябрь 2026, на полке они могут отличаться. Выгоднее всего брать курицу и творог по акциям и собственные марки магазинов.</p>
+    </div>
+
+    <div class="block">
+      <h3>Список покупок на неделю</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Что</th><th class="n">Сколько</th><th class="n">≈ ₽</th></tr></thead>
+          <tbody>
+            <tr><td>Куриная грудка или бедро</td><td class="n">1,4 кг</td><td class="n">700</td></tr>
+            <tr><td>Куриный фарш</td><td class="n">1,4 кг</td><td class="n">560</td></tr>
+            <tr><td>Яйца</td><td class="n">2 десятка</td><td class="n">230</td></tr>
+            <tr><td>Творог 5%</td><td class="n">7 пачек по 200 г</td><td class="n">770</td></tr>
+            <tr><td>Молоко 2,5%</td><td class="n">2 л</td><td class="n">180</td></tr>
+            <tr><td>Кефир 1%</td><td class="n">3,5 л</td><td class="n">350</td></tr>
+            <tr><td>Овсянка</td><td class="n">0,6 кг</td><td class="n">80</td></tr>
+            <tr><td>Гречка</td><td class="n">0,7 кг</td><td class="n">100</td></tr>
+            <tr><td>Рис или макароны</td><td class="n">0,6 кг</td><td class="n">90</td></tr>
+            <tr><td>Бананы</td><td class="n">1,3 кг</td><td class="n">200</td></tr>
+            <tr><td>Овощи и заморозка</td><td class="n">≈ 2,5 кг</td><td class="n">400</td></tr>
+            <tr><td>Хлеб</td><td class="n">2 буханки</td><td class="n">140</td></tr>
+          </tbody>
+          <tfoot><tr><td>Итого</td><td class="n"></td><td class="n">≈ 3800 ₽</td></tr></tfoot>
+        </table>
+      </div>
+      <p class="small" style="margin:8px 0 0">Это примерно 540 ₽ в день или 16–17 тысяч в месяц. Если брать бедро вместо грудки и раз в неделю делать печень, выйдет ещё дешевле.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="block">
+        <h3>Где покупать</h3>
+        <ul>
+          <li><b>Магнит</b> на Родниковой, 5А и Пятёрочки у дома подходят для основной закупки: курица, яйца, крупы, кефир.</li>
+          <li><b>ВкусВилл</b> дороже, туда стоит ходить за творогом и кефиром по скидкам.</li>
+          <li>Раз в неделю закупайся по списку, а не каждый день по чуть-чуть: так дешевле и проще не сорваться.</li>
+        </ul>
+      </div>
+      <div class="block">
+        <h3>Чем заменить, если надоело</h3>
+        <ul>
+          <li><b>Курица:</b> индейка (фарш, голень), куриная печень, говядина по акции.</li>
+          <li><b>Гречка и рис:</b> макароны из твёрдых сортов, картошка, булгур.</li>
+          <li><b>Творог:</b> греческий йогурт, сырники из того же творога.</li>
+          <li><b>Овсянка:</b> бутерброды с яйцом, сырники.</li>
+        </ul>
+      </div>
+      <div class="block">
+        <h3>Как не тратить время</h3>
+        <ul>
+          <li>Готовь сразу на 2–3 дня: противень курицы и котлет в духовке плюс кастрюля гречки.</li>
+          <li>Раскладывай всё по контейнерам, тогда обед в зал или на работу собирается за минуту.</li>
+          <li>Вместо майонеза бери томатную пасту, специи, соевый соус, горчицу.</li>
+        </ul>
+      </div>
+      <div class="block">
+        <h3>Без рыбы</h3>
+        <ul>
+          <li>Рыбы в рационе нет, поэтому омега-3 получай из грецких орехов (горсть в день) и рапсового или льняного масла в салат.</li>
+          <li>Можно пить капсулы омега-3 из аптеки, это недорого.</li>
+          <li>Сладкое и фастфуд оставь на 1–2 раза в неделю, а не каждый день.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid2" id="rules">
+    <div class="block">
+      <h3>Прогрессия</h3>
+      <ul>
+        <li>Записывай вес в поле под упражнением.</li>
+        <li>Сделал верх диапазона во всех подходах: в следующий раз +2,5 кг на штангу или +1–2 кг на гантели.</li>
+        <li>Последние 1–2 повтора тяжёлые, но техничные.</li>
+        <li>Отдых: 2–3 мин в первых двух упражнениях, 60–90 с в остальных.</li>
+        <li>Каждые 8 недель лёгкая неделя: веса на 40% меньше.</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>Контроль результата</h3>
+      <ul>
+        <li>Вес раз в неделю, утром натощак.</li>
+        <li>Талия на уровне пупка раз в 2 недели.</li>
+        <li>Фото при одном и том же свете раз в месяц.</li>
+        <li>Талия растёт быстро: убери 200 ккал.</li>
+        <li>Веса в зале стоят 3 недели: добавь 200 ккал и проверь сон.</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>Перед тренировкой</h3>
+      <ul>
+        <li>5–7 минут кардио.</li>
+        <li>1–2 лёгких разминочных подхода в первом упражнении.</li>
+        <li>8–10 тысяч шагов в день, сон 7–9 часов.</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>Заметки</h3>
+      <ul>
+        <li>Галочки и веса сохраняются только в браузере на этом телефоне.</li>
+        <li>Видео открываются поиском на YouTube: выбирай ролик, где техника показана сбоку и медленно.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+const yt = q => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
+const DAYS = {
+  a: { title: "День A", items: [
+    ["Приседания со штангой","3×6–8","квадрицепсы, ягодицы","приседания со штангой техника"],
+    ["Жим штанги лёжа","3×6–8","грудь, передние дельты, трицепс","жим штанги лежа техника"],
+    ["Тяга горизонтального блока","3×10–12","середина спины, широчайшие","тяга горизонтального блока техника"],
+    ["Махи гантелями в стороны","3×12–15","средние дельты","махи гантелями в стороны техника"],
+    ["Тяга каната к лицу","2×15","задние дельты, осанка","тяга каната к лицу face pull техника"],
+    ["Подъём штанги на бицепс","2×10–12","бицепс","подъем штанги на бицепс техника"],
+    ["Скручивания","2×12–15","пресс","скручивания на пресс техника"]
+  ]},
+  b: { title: "День B", items: [
+    ["Жим гантелей на наклонной","4×8–10","верх груди, передние дельты","жим гантелей на наклонной скамье техника"],
+    ["Жим ногами","3×10–12","квадрицепсы, ягодицы","жим ногами в тренажере техника"],
+    ["Подтягивания","3×6–10","широчайшие, бицепс","подтягивания техника",
+      {text:"Если пока не получается, делай ", link:["тягу верхнего блока","тяга верхнего блока техника"]}],
+    ["Жим гантелей сидя","3×8–10","плечи, трицепс","жим гантелей сидя техника"],
+    ["Махи в стороны в кроссовере","3×12–15","средние дельты","махи в сторону в кроссовере техника"],
+    ["Гиперэкстензия","3×12–15","поясница, ягодицы, задняя поверхность бедра","гиперэкстензия техника"],
+    ["Разгибания на верхнем блоке","2×10–12","трицепс","разгибание рук на блоке трицепс техника"]
+  ]},
+  c: { title: "День C", items: [
+    ["Брусья","3×8–12","низ груди, трицепс","отжимания на брусьях на грудь техника",
+      {text:"Можно заменить на ", link:["жим в хаммере","жим в хаммере техника"]}],
+    ["Болгарские выпады","3×8–10 на ногу","квадрицепсы, ягодицы","болгарские сплит приседания техника"],
+    ["Тяга гантели одной рукой","3×10–12","широчайшие, середина спины","тяга гантели одной рукой техника"],
+    ["Сведение в кроссовере","3×12–15","грудь","сведение рук в кроссовере техника"],
+    ["Махи гантелями в стороны","3×12–15","средние дельты","махи гантелями в стороны техника"],
+    ["Сгибание ног в тренажёре","3×10–12","задняя поверхность бедра","сгибание ног в тренажере техника"],
+    ["Молотки с гантелями","2×10–12","бицепс, предплечья","молотки с гантелями техника"]
+  ]}
+};
+
+const store = {
+  get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+  set(k,v){ try { localStorage.setItem(k,v); } catch(e){} },
+  del(k){ try { localStorage.removeItem(k); } catch(e){} }
+};
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const panels = document.getElementById("panels");
+for (const [key, day] of Object.entries(DAYS)) {
+  const sec = document.createElement("section");
+  sec.className = "panel"; sec.dataset.day = key; sec.id = "day-" + key;
+  sec.setAttribute("role","tabpanel"); sec.setAttribute("aria-labelledby","tab-" + key);
+  sec.innerHTML = `<div class="day-head"><h2>${day.title}</h2><button class="reset" type="button" id="reset-${key}">Снять галочки</button></div>
+    <ol class="list">${day.items.map((it,i) => {
+      const [name, sets, mus, q, alt] = it; const id = `${key}${i}`;
+      const altHtml = alt ? `<div class="note">${alt.text}<a href="${yt(alt.link[1])}" target="_blank" rel="noopener">${alt.link[0]}</a></div>` : "";
+      return `<li class="ex" id="ex-${id}">
+        <input type="checkbox" id="chk-${id}" aria-label="Сделано: ${esc(name)}">
+        <div class="ex-top"><a class="ex-name" href="${yt(q)}" target="_blank" rel="noopener">${esc(name)}</a><span class="sets">${sets}</span></div>
+        <div class="muscles">${esc(mus)}</div>
+        ${altHtml}
+        <div class="row"><a class="vid" href="${yt(q)}" target="_blank" rel="noopener">▶ Техника</a>
+          <input class="log" id="log-${id}" type="text" inputmode="decimal" placeholder="Вес, напр. 40 кг × 8" aria-label="Рабочий вес: ${esc(name)}"></div>
+      </li>`;}).join("")}</ol>`;
+  panels.appendChild(sec);
+
+  day.items.forEach((_, i) => {
+    const id = `${key}${i}`;
+    const chk = document.getElementById("chk-" + id), log = document.getElementById("log-" + id), li = document.getElementById("ex-" + id);
+    chk.checked = store.get("chk-" + id) === "1"; li.classList.toggle("done", chk.checked);
+    log.value = store.get("log-" + id) || "";
+    chk.addEventListener("change", () => { li.classList.toggle("done", chk.checked); chk.checked ? store.set("chk-"+id,"1") : store.del("chk-"+id); });
+    log.addEventListener("input", () => store.set("log-" + id, log.value));
+  });
+  document.getElementById("reset-" + key).addEventListener("click", () => {
+    day.items.forEach((_, i) => { const id = `${key}${i}`; store.del("chk-"+id);
+      document.getElementById("chk-"+id).checked = false; document.getElementById("ex-"+id).classList.remove("done"); });
+  });
+}
+
+const KEYS = ["a","b","c","food"];
+const tabs = [...document.querySelectorAll(".tab")];
+const rules = document.getElementById("rules");
+function show(key){
+  tabs.forEach(t => t.setAttribute("aria-selected", String(t.dataset.day === key)));
+  document.querySelectorAll(".panel").forEach(p => p.hidden = p.dataset.day !== key);
+  rules.hidden = key === "food";
+  store.set("day", key);
+}
+tabs.forEach(t => t.addEventListener("click", () => show(t.dataset.day)));
+const fromHash = location.hash.replace("#","");
+const saved = store.get("day");
+show(KEYS.includes(fromHash) ? fromHash : (KEYS.includes(saved) ? saved : "a"));
+</script>
+
+</html>
